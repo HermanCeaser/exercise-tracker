@@ -1,9 +1,22 @@
+"use strict";
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const mongo = require("mongodb");
+const mongoose = require("mongoose");
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+//Database Connection
+mongoose
+  .connect(
+    process.env.DB_URI || "mongodb://localhost:27017/exercise-track",
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    () => console.log("Connected to Db...")
+  )
+  .catch((err) => console.log("Could not Connect to Db due to: " + err));
 
 // Cors Middleware
 app.use(cors());
