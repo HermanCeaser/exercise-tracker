@@ -1,5 +1,5 @@
 "use strict";
-
+// Global Imports
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -9,9 +9,13 @@ const mongoose = require("mongoose");
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Local Imports
+const Model = require("./models");
+const ExerciseRouter = require("./routes/exerciseRouter")(Model);
+
 //Database Connection
 mongoose.connect(
-  process.env.DB_URI || "mongodb://localhost:27017/exercise-track",
+  process.env.DB_URL || "mongodb://localhost:27017/exercise-track",
   { useNewUrlParser: true, useUnifiedTopology: true },
   (err) => {
     if (err) return console.log("Could not Connect to Db due to: " + err);
@@ -37,8 +41,6 @@ app.set("view engine", "pug");
 app.get("/", (req, res) => {
   res.render("index");
 });
-
-const ExerciseRouter = require("./routes/exerciseRouter")();
 
 app.use("/api/exercise/", ExerciseRouter);
 
