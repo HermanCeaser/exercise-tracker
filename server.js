@@ -17,10 +17,10 @@ app.use(express.static("public"));
 
 // Set up View-render engine[pug]
 app.set("views", "./views");
-app.set("view-engine", "pug");
+app.set("view engine", "pug");
 
 app.get("/", (req, res) => {
-  res.send("Welcome to our Exercise tracker App");
+  res.render("index");
 });
 
 // Handle Not found Middleware
