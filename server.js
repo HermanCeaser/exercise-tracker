@@ -10,13 +10,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 //Database Connection
-mongoose
-  .connect(
-    process.env.DB_URI || "mongodb://localhost:27017/exercise-track",
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    () => console.log("Connected to Db...")
-  )
-  .catch((err) => console.log("Could not Connect to Db due to: " + err));
+mongoose.connect(
+  process.env.DB_URI || "mongodb://localhost:27017/exercise-track",
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  (err) => {
+    if (err) return console.log("Could not Connect to Db due to: " + err);
+    console.log("Connected to Db...");
+  }
+);
 
 // Cors Middleware
 app.use(cors());
@@ -32,9 +33,14 @@ app.use(express.static("public"));
 app.set("views", "./views");
 app.set("view engine", "pug");
 
+// App Routes
 app.get("/", (req, res) => {
   res.render("index");
 });
+
+const ExerciseRouter = require("./routes/exerciseRouter")();
+
+app.use("/api/exercise/", ExerciseRouter);
 
 // Handle Not found Middleware
 app.use((req, res, next) => {
