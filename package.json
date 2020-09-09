@@ -1,0 +1,35 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "A fullstack Javascript app that tracks users together with their exercises",
+  "main": "server.js",
+  "scripts": {
+    "start": "node -r dotenv/config server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HermanCeaser/exercise-tracker.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "Exercise Tracker"
+  ],
+  "author": "Herman Ceaser <ceaserbanks09@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HermanCeaser/exercise-tracker/issues"
+  },
+  "homepage": "https://github.com/HermanCeaser/exercise-tracker#readme",
+  "dependencies": {
+    "body-parse": "^0.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.1",
+    "mongoose": "^5.10.3"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
