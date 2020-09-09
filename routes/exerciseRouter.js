@@ -22,7 +22,7 @@ const router = (model) => {
       const { username } = req.body;
       model.User.create({ name: username }, (err, user) => {
         if (err) return console.log(`Failed to create User due to : ${err}`);
-        res.json(user);
+        res.json({ username: user.name, id: user._id });
       });
     }
   });
@@ -44,7 +44,13 @@ const router = (model) => {
           (err, data) => {
             if (err) return console.log(err);
             console.log(data);
-            res.json(data);
+            res.json({
+              _id: data._id,
+              userId: data.userId,
+              date: data.date.toDateString(),
+              duration: data.duration,
+              description: data.description,
+            });
           }
         );
       });
