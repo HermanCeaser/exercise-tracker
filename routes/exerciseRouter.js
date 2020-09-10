@@ -12,17 +12,45 @@ const router = (model) => {
     });
   });
 
+  // get all Users from the Database
+  exerciseRouter.get("/exercises", (req, res) => {
+    model.Exercise.find({}, (err, exercises) => {
+      if (err) {
+        return console.log(`Could not retrieve users from Database : ${err}`);
+      }
+      res.json(exercises);
+    });
+  });
+
+  // Get Logs for a selected User
   exerciseRouter.get("/log/:userId", (req, res) => {
-    res.send("Here is the Log for the Requested User");
+    if (req.params.userId) {
+      // Check if user Exists
+      model.User.findById(req.params.userId)
+        .then((user) => {
+          if (!user) throw new Error(err);
+          return model.Exercise.find({ userId: req.params.userId }).populate(
+            "userId"
+          );
+        })
+        .then((exercise) => {
+          console.log(exercise);
+          res.json(exercise);
+        })
+        .catch((err) => {
+          res.status(500).json({ error: err });
+        });
+    }
+    // res.send("Here is the Log for the Requested User");
   });
 
   // Add A User to database
   exerciseRouter.post("/new-user", (req, res) => {
     if (req.body.username) {
       const { username } = req.body;
-      model.User.create({ name: username }, (err, user) => {
+      model.User.create({ username }, (err, user) => {
         if (err) return console.log(`Failed to create User due to : ${err}`);
-        res.json({ username: user.name, _id: user._id });
+        res.json({ _id: user._id, username: user.username });
       });
     }
   });
@@ -54,8 +82,8 @@ const router = (model) => {
         .then((data) => {
           // console.log(data);
           res.json({
-            _id: data._id,
-            username: data.userId.name,
+            _id: data.userId._id,
+            username: data.userId.username,
             date: data.date.toDateString(),
             duration: data.duration,
             description: data.description,
