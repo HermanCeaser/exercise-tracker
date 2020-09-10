@@ -44,6 +44,20 @@ app.get("/", (req, res) => {
 
 app.use("/api/exercise/", ExerciseRouter);
 
+app.get("/api/exercise/users/delete", (req, res) => {
+  Model.User.deleteMany().exec((err) => {
+    if (err) return res.status(500).json({ error: err });
+    return res.json({ message: "All Users Deleted succesfully" });
+  });
+});
+
+app.get("/api/exercise/exercises/delete", (req, res) => {
+  Model.Exercise.deleteMany().exec((err) => {
+    if (err) return res.status(500).json({ error: err });
+    return res.json({ message: "All Exercises Deleted succesfully" });
+  });
+});
+
 // Handle Not found Middleware
 app.use((req, res, next) => {
   return next({ status: 404, message: "Page not Found" });
