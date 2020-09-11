@@ -15,7 +15,7 @@ const ExerciseRouter = require("./routes/exerciseRouter")(Model);
 
 //Database Connection
 mongoose.connect(
-  process.env.DB_URI || "mongodb://localhost:27017/exercise-track",
+  process.env.DB_URL || "mongodb://localhost:27017/exercise-track",
   { useNewUrlParser: true, useUnifiedTopology: true },
   (err) => {
     if (err) return console.log("Could not Connect to Db due to: " + err);

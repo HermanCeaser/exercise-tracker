@@ -23,23 +23,33 @@ const router = (model) => {
   });
 
   // Get Logs for a selected User
-  exerciseRouter.get("/log/:userId", (req, res) => {
-    if (req.params.userId) {
+  exerciseRouter.get("/log", (req, res) => {
+    let id = req.query.userId;
+    if (id) {
       // Check if user Exists
-      model.User.findById(req.params.userId)
+      model.User.findById(id)
         .then((user) => {
           if (!user) throw new Error(err);
-          return model.Exercise.find({ userId: req.params.userId }).populate(
-            "userId"
-          );
+          return model.Exercise.find({ userId: id }).populate("userId");
         })
         .then((exercise) => {
-          console.log(exercise);
-          res.json(exercise);
+          // console.log(exercise);
+          res.json({
+            _id: exercise[0].userId._id,
+            username: exercise[0].userId.username,
+            count: exercise.length,
+            log: exercise.map((x) => ({
+              description: x.description,
+              duration: x.duration,
+              date: x.date.toDateString(),
+            })),
+          });
         })
         .catch((err) => {
-          res.status(500).json({ error: err });
+          return res.status(500).json({ error: "User not found" });
         });
+    } else {
+      return res.json({ error: "No UserId was passed" });
     }
     // res.send("Here is the Log for the Requested User");
   });
