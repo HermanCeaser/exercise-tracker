@@ -25,19 +25,44 @@ const router = (model) => {
   // Get Logs for a selected User
   exerciseRouter.get("/log", (req, res) => {
     let id = req.query.userId;
+    let { from, limit, to } = req.query;
+
     if (id) {
       // Check if user Exists
       model.User.findById(id)
         .then((user) => {
           if (!user) throw new Error(err);
-          return model.Exercise.find({ userId: id }).populate("userId");
+          /**
+           * If only from Param is passed,
+           * query the db for exercises greater than the passed date           *
+           */
+          if (from) {
+            let result;
+            result = model.Exercise.find({ userId: id })
+              .where("date")
+              .gt(from)
+              .populate("userId");
+            // Check whether addition params i.e limit or to are passed
+            if (limit || to) {
+              // chain the result to query upto a certain date or return a certain limit
+              limit ? result.limit(parseInt(limit)) : result.lt(to);
+            }
+            // return the result for further processing
+            return result;
+          } else {
+            // If no from is passed, just get the whole log of exercises
+            return model.Exercise.find({ userId: id }).populate("userId");
+          }
         })
         .then((exercise) => {
-          // console.log(exercise);
+          // Return a response object as Json
           res.json({
             _id: exercise[0].userId._id,
             username: exercise[0].userId.username,
+            from: from ? new Date(from).toDateString() : from,
+            to: to ? new Date(to).toDateString() : to,
             count: exercise.length,
+            // Filter the array to just return description, duration and formatted date
             log: exercise.map((x) => ({
               description: x.description,
               duration: x.duration,
